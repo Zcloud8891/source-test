@@ -1,0 +1,6 @@
+Fonts bundled with The Source Test are licensed under the SIL Open Font License 1.1.
+
+- Libre Baskerville, by Impallari Type (Pablo Impallari and Rodrigo Fuenzalida, with typographic advice from Robert Strauch). https://github.com/impallari/Libre-Baskerville
+- Source Sans 3, by Adobe (Paul D. Hunt). https://github.com/adobe-fonts/source-sans
+
+These are static instances, subset to Latin, made from the upstream variable fonts. The license is not an endorsement of this project by the font authors. SIL OFL 1.1: https://scripts.sil.org/OFL
