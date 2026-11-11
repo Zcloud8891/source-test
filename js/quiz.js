@@ -52,6 +52,44 @@
     return D.bookUrl(type || "site", placement);
   }
 
+  /* Cookieless named counters on Abacus. No personal data. Live host only. */
+  var COUNTER_HIT = "https://abacus.jasoncameron.dev/hit/source-test/";
+  var COUNTER_TYPES = { borrower: true, counter: true, cynic: true, grader: true };
+
+  function bookType() {
+    var h = currentHash();
+    if (COUNTER_TYPES[h]) return h;
+    if (COUNTER_TYPES[state.result]) return state.result;
+    return "site";
+  }
+
+  function bump(kind, slug) {
+    if (location.hostname !== "zcloud8891.github.io") return;
+    if (kind !== "complete" && kind !== "click") return;
+    if (kind === "complete" && !COUNTER_TYPES[slug]) return;
+    if (kind === "click" && !COUNTER_TYPES[slug] && slug !== "site") return;
+    var url = COUNTER_HIT + kind + "-" + slug;
+    try {
+      fetch(url, {
+        method: "GET",
+        mode: "no-cors",
+        keepalive: true,
+        credentials: "omit",
+        cache: "no-store",
+        referrerPolicy: "no-referrer",
+      });
+    } catch (e) {}
+  }
+
+  function onBookClick(e) {
+    var node = e.target;
+    var a = node && node.closest ? node.closest("a") : null;
+    if (!a) return;
+    var href = a.href || "";
+    if (href.indexOf("https://dojostudios.gumroad.com/") !== 0) return;
+    bump("click", bookType());
+  }
+
   function save() {
     try {
       sessionStorage.setItem(
@@ -274,6 +312,7 @@
       state.result = winnerFrom(state.answers);
       state.shared = false;
       save();
+      bump("complete", state.result);
       setHash(state.result);
       render();
       return;
@@ -698,6 +737,15 @@
       footer.href = bookHref(slug, "cta-footer");
     }
   }
+
+  document.addEventListener("click", onBookClick, true);
+  document.addEventListener(
+    "auxclick",
+    function (e) {
+      if (e.button === 1) onBookClick(e);
+    },
+    true
+  );
 
   document.addEventListener("click", function (e) {
     var restart = e.target.closest("[data-restart]");
